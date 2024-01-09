@@ -4,6 +4,9 @@ import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -32,26 +35,57 @@ fun MyFirstComposable() {
     Text("My second composable")
 }
 
-@Preview(
-    name = "Dark Preview",
-    uiMode = UI_MODE_NIGHT_YES
-)
-@Preview(
-    name = "Light Preview"
-)
-@Preview(
-    name = "First Preview",
-    heightDp = 200,
-    widthDp = 300,
-    showBackground = true,
-    backgroundColor = 0xFFFF1144,
-)
-@Preview(
-    name = "Mobile Preview",
-    showBackground = true,
-    backgroundColor = 0xf00,
-    showSystemUi = true,
-)
+@Preview(showBackground = true)
+@Composable
+fun ColumnPreview() {
+    Column {
+        Text("Text 1")
+        Text("Text 2")
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun RowPreview() {
+    Row {
+        Text("Text 1")
+        Text("Text 2")
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun BoxPreview() {
+    Box {
+        Text("Text 1")
+        Text("Text 2")
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun CustomPreview() {
+    Column {
+        Text(text = "Text 1")
+        Text(text = "Text 2")
+        Row {
+            Text(text = "Text 3")
+            Text(text = "Text 4")
+        }
+        Box {
+            Row {
+                Text(text = "Text 5")
+                Text(text = "Text 6")
+            }
+            Column {
+                Text(text = "Text 7")
+                Text(text = "Text 8")
+            }
+        }
+    }
+}
+
+@Preview
 @Composable
 fun MyFirstComposablePreview() {
     AluveryTheme {
