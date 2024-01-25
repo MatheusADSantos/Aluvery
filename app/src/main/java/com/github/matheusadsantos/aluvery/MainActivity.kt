@@ -21,6 +21,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.darkColorScheme
@@ -67,11 +68,56 @@ fun ProductSession() {
                 .horizontalScroll(rememberScrollState())
                 .padding(horizontal = 16.dp),
                 horizontalArrangement = Arrangement.spacedBy(16.dp)) {
-            ProductItem()
-            ProductItem()
-            ProductItem()
-            ProductItem()
-            ProductItem()
+            ProductItemDescription()
+            ProductItemDescription(LoremIpsum(40).values.first())
+            ProductItemDescription()
+            ProductItemDescription(LoremIpsum(20).values.first())
+            ProductItemDescription(LoremIpsum(120).values.first())
+        }
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun ProductItemDescription(description: String? = null) {
+    Surface(shape = RoundedCornerShape(25.dp),
+            shadowElevation = 4.dp) {
+        Column(Modifier
+                .heightIn(240.dp, 250.dp)
+                .width(200.dp)
+                .verticalScroll(rememberScrollState())) {
+            Column() {
+                val sizeImage = 100.dp
+                Box(Modifier
+                        .height(100.dp)
+                        .background(brush = Brush.horizontalGradient(colors = listOf(Purple500, Teal200)))
+                        .fillMaxWidth()) {
+                    Image(
+                            painter = painterResource(id = R.drawable.ic_launcher_background),
+                            contentDescription = null,
+                            Modifier
+                                    .size(sizeImage)
+                                    .offset(y = sizeImage / 2)
+                                    .clip(shape = CircleShape)
+                                    .align(Alignment.Center)
+                    )
+                }
+                Spacer(modifier = Modifier.height(sizeImage / 2))
+                Column(Modifier.padding(16.dp)) {
+                    Text(text = LoremIpsum(50).values.first(),
+                            fontSize = 18.sp,
+                            fontWeight = FontWeight(700),
+                            maxLines = 2,
+                            overflow = TextOverflow.Ellipsis)
+                    Text(text = "R$ 14,99",
+                            Modifier.padding(top = 8.dp),
+                            fontSize = 14.sp,
+                            fontWeight = FontWeight(400))
+                }
+            }
+            if (!description.isNullOrBlank()) {
+                Text(text = description, Modifier.background(Purple500))
+            }
         }
     }
 }
