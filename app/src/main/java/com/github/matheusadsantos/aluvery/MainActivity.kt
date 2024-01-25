@@ -5,6 +5,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -20,6 +21,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.darkColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -49,24 +51,29 @@ class MainActivity : ComponentActivity() {
     }
 }
 
-@Preview
+@Preview(showBackground = true, widthDp = 1000)
 @Composable
 fun ProductSession() {
-      Column {
-          Text(text = "Promotions")
-          Row {
-              ProductItem()
-              ProductItem()
-              ProductItem()
-          }
-      }
+    Column() {
+        Text(text = "Promotions",
+                Modifier.padding(top = 16.dp, start = 16.dp, end = 16.dp),
+                fontSize = 20.sp,
+                fontWeight = FontWeight(400))
+        Row(Modifier
+                .padding(start = 16.dp, top = 8.dp, end = 16.dp, bottom = 16.dp)
+                .fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(16.dp)) {
+            ProductItem()
+            ProductItem()
+            ProductItem()
+        }
+    }
 }
 
-@Preview
+@Preview(showBackground = true)
 @Composable
 fun ProductItem() {
-    Surface(Modifier.padding(8.dp),
-            shape = RoundedCornerShape(25.dp),
+    Surface(shape = RoundedCornerShape(25.dp),
             shadowElevation = 4.dp) {
         Column(Modifier
                 .heightIn(250.dp, 300.dp)
