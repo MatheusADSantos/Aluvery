@@ -14,15 +14,14 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.github.matheusadsantos.aluvery.R
 import com.github.matheusadsantos.aluvery.model.Product
-import java.math.BigDecimal
+import com.github.matheusadsantos.aluvery.sampledata.sampleProducts
 
 @Composable
-fun ProductSession() {
+fun ProductSection(title: String, listProducts: List<Product>) {
     Column() {
         Text(
-            text = "Promotions",
+            text = title,
             Modifier.padding(start = 16.dp, end = 16.dp),
             fontSize = 20.sp,
             fontWeight = FontWeight(400)
@@ -35,27 +34,9 @@ fun ProductSession() {
                 .padding(horizontal = 16.dp),
             horizontalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            ProductItem(
-                Product(
-                    "Hamburguer",
-                    BigDecimal("12.99"),
-                    R.drawable.hamburger
-                )
-            )
-            ProductItem(
-                Product(
-                    "Pizza",
-                    BigDecimal("19.99"),
-                    R.drawable.pizza
-                )
-            )
-            ProductItem(
-                Product(
-                    "Fries",
-                    BigDecimal("6.99"),
-                    R.drawable.fries
-                )
-            )
+            listProducts.forEach { product ->
+                ProductItem(product)
+            }
         }
     }
 }
@@ -63,5 +44,5 @@ fun ProductSession() {
 @Preview(showBackground = true)
 @Composable
 fun ProductSessionPreview() {
-    ProductSession()
+    ProductSection("Test", sampleProducts)
 }
