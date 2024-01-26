@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
@@ -21,6 +22,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -43,17 +45,43 @@ import com.github.matheusadsantos.aluvery.ui.theme.Purple500
 import com.github.matheusadsantos.aluvery.ui.theme.Teal200
 import java.math.BigDecimal
 
+/*
+This layout is based in:
+https://www.figma.com/file/8jLGPSbGkd31YLLAXakwGp/Aluvery?node-id=5%3A34&mode=dev
+*/
+
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            AluveryTheme {
-                Surface {
-                    ProductSession()
-                }
+            App()
+        }
+    }
+}
+
+@Composable
+private fun App() {
+    AluveryTheme {
+        Surface {
+            Column(
+                Modifier
+                    .fillMaxSize()
+                    .verticalScroll(rememberScrollState())
+                    .padding(vertical = 16.dp),
+                verticalArrangement = Arrangement.spacedBy(16.dp)
+            ) {
+                ProductSession()
+                ProductSession()
+                ProductSession()
             }
         }
     }
+}
+
+@Preview(showSystemUi = true)
+@Composable
+fun AppPreview() {
+    App()
 }
 
 @Preview(showBackground = true)
@@ -62,13 +90,13 @@ fun ProductSession() {
     Column() {
         Text(
             text = "Promotions",
-            Modifier.padding(top = 16.dp, start = 16.dp, end = 16.dp),
+            Modifier.padding(start = 16.dp, end = 16.dp),
             fontSize = 20.sp,
             fontWeight = FontWeight(400)
         )
         Row(
             Modifier
-                .padding(top = 8.dp, bottom = 16.dp)
+                .padding(top = 8.dp)
                 .fillMaxWidth()
                 .horizontalScroll(rememberScrollState())
                 .padding(horizontal = 16.dp),
