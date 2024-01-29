@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -32,18 +33,13 @@ import androidx.compose.ui.unit.sp
 import com.github.matheusadsantos.aluvery.R
 import com.github.matheusadsantos.aluvery.extension.toBrazilianCurrency
 import com.github.matheusadsantos.aluvery.model.Product
+import com.github.matheusadsantos.aluvery.ui.theme.AluveryTheme
 import com.github.matheusadsantos.aluvery.ui.theme.Purple500
 import com.github.matheusadsantos.aluvery.ui.theme.Teal200
 import java.math.BigDecimal
 
 @Composable
-fun ProductItem(
-    product: Product = Product(
-        LoremIpsum(10).values.first(),
-        BigDecimal(0),
-        R.drawable.placeholder
-    )
-) {
+fun ProductItem(product: Product) {
     Surface(
         shape = RoundedCornerShape(25.dp),
         shadowElevation = 4.dp
@@ -57,11 +53,18 @@ fun ProductItem(
             Box(
                 Modifier
                     .height(100.dp)
-                    .background(brush = Brush.horizontalGradient(colors = listOf(Purple500, Teal200)))
+                    .background(
+                        brush = Brush.horizontalGradient(
+                            colors = listOf(
+                                MaterialTheme.colorScheme.primary,
+                                MaterialTheme.colorScheme.secondary
+                            )
+                        )
+                    )
                     .fillMaxWidth()
             ) {
                 Image(
-                    painter = painterResource(id = product.image),
+                    painter = painterResource(id = R.drawable.placeholder),
                     contentDescription = null,
                     Modifier
                         .size(sizeImage)
@@ -95,5 +98,15 @@ fun ProductItem(
 @Preview(showBackground = true)
 @Composable
 fun ProductItemPreview() {
-    ProductItem()
+//    ProductItem()
+    AluveryTheme {
+        Surface {
+            ProductItem(
+                Product(
+                    name = LoremIpsum(50).values.first(),
+                    price = BigDecimal("14.99")
+                )
+            )
+        }
+    }
 }
