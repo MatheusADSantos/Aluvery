@@ -1,6 +1,5 @@
 package com.github.matheusadsantos.aluvery.ui.theme.component
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -30,12 +29,12 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.datasource.LoremIpsum
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import coil.compose.AsyncImage
+import coil.compose.AsyncImagePainter
 import com.github.matheusadsantos.aluvery.R
 import com.github.matheusadsantos.aluvery.extension.toBrazilianCurrency
 import com.github.matheusadsantos.aluvery.model.Product
 import com.github.matheusadsantos.aluvery.ui.theme.AluveryTheme
-import com.github.matheusadsantos.aluvery.ui.theme.Purple500
-import com.github.matheusadsantos.aluvery.ui.theme.Teal200
 import java.math.BigDecimal
 
 @Composable
@@ -63,15 +62,16 @@ fun ProductItem(product: Product) {
                     )
                     .fillMaxWidth()
             ) {
-                Image(
-                    painter = painterResource(id = R.drawable.placeholder),
+                AsyncImage(
+                    model = product.image,
                     contentDescription = null,
                     Modifier
                         .size(sizeImage)
                         .offset(y = sizeImage / 2)
                         .clip(shape = CircleShape)
-                        .align(Alignment.Center),
+                        .align(Alignment.BottomCenter),
                     contentScale = ContentScale.Crop,
+                    placeholder = painterResource(id = R.drawable.placeholder)
                 )
             }
             Spacer(modifier = Modifier.height(sizeImage / 2))
