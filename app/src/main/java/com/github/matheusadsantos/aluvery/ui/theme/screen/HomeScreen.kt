@@ -10,6 +10,10 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -24,8 +28,10 @@ fun HomeScreen(
     sections: Map<String, List<Product>>
 ) {
     Column {
-        OutlinedTextField(value = "Matheus", onValueChange = { newValue ->
-            Log.d("HomrScreen", "HomeScreen: $newValue")
+        var text by remember { mutableStateOf("") }
+        OutlinedTextField(value = text, onValueChange = { newValue ->
+            Log.d("HomeScreen", "HomeScreen: $text")
+            text = newValue
         })
         LazyColumn(
             Modifier
