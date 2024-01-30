@@ -65,7 +65,7 @@ fun ProductItem(product: Product) {
                 AsyncImage(
                     model = product.image,
                     contentDescription = null,
-                    Modifier
+                    Modifier 
                         .size(sizeImage)
                         .offset(y = sizeImage / 2)
                         .clip(shape = CircleShape)
