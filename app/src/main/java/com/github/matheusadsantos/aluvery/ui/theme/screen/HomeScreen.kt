@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Search
@@ -24,8 +25,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.github.matheusadsantos.aluvery.model.Product
+import com.github.matheusadsantos.aluvery.sampledata.sampleProducts
 import com.github.matheusadsantos.aluvery.sampledata.sampleSections
 import com.github.matheusadsantos.aluvery.ui.theme.AluveryTheme
+import com.github.matheusadsantos.aluvery.ui.theme.component.CardProductItem
 import com.github.matheusadsantos.aluvery.ui.theme.component.ProductsSection
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -63,16 +66,19 @@ fun HomeScreen(
                 .padding(vertical = 16.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp),
         ) {
-            for (section in sections) {
-                val title = section.key
-                val products = section.value
-                item {
-                    ProductsSection(
-                        title = title,
-                        products = products
-                    )
-                }
+            items(sampleProducts) { product ->
+                CardProductItem(product = product)
             }
+//            for (section in sections) {
+//                val title = section.key
+//                val products = section.value
+//                item {
+//                    ProductsSection(
+//                        title = title,
+//                        products = products
+//                    )
+//                }
+//            }
         }
     }
 }
