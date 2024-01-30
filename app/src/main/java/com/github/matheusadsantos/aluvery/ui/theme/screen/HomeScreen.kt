@@ -29,7 +29,6 @@ import com.github.matheusadsantos.aluvery.sampledata.sampleProducts
 import com.github.matheusadsantos.aluvery.sampledata.sampleSections
 import com.github.matheusadsantos.aluvery.ui.theme.AluveryTheme
 import com.github.matheusadsantos.aluvery.ui.theme.component.CardProductItem
-import com.github.matheusadsantos.aluvery.ui.theme.component.ProductsSection
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -45,7 +44,7 @@ fun HomeScreen(
             },
             Modifier
                 .fillMaxWidth()
-                .padding(top = 16.dp, start = 16.dp, end = 16.dp),
+                .padding(16.dp),
             shape = RoundedCornerShape(100),
             leadingIcon = {
                 Icon(
@@ -63,11 +62,11 @@ fun HomeScreen(
         LazyColumn(
             Modifier
                 .fillMaxSize()
-                .padding(vertical = 16.dp),
+                .padding(bottom = 16.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp),
         ) {
             items(sampleProducts) { product ->
-                CardProductItem(product = product)
+                CardProductItem(product = product, Modifier.padding(horizontal = 16.dp))
             }
 //            for (section in sections) {
 //                val title = section.key

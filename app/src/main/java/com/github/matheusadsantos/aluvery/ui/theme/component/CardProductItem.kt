@@ -24,10 +24,11 @@ import com.github.matheusadsantos.aluvery.ui.theme.AluveryTheme
 @Composable
 fun CardProductItem(
     product: Product,
+    modifier: Modifier = Modifier,
     elevation: CardElevation = CardDefaults.elevatedCardElevation()
 ) {
     Card(
-        Modifier
+        modifier
             .fillMaxWidth()
             .heightIn(150.dp),
         elevation = elevation
