@@ -29,18 +29,20 @@ import com.github.matheusadsantos.aluvery.sampledata.sampleProducts
 import com.github.matheusadsantos.aluvery.sampledata.sampleSections
 import com.github.matheusadsantos.aluvery.ui.theme.AluveryTheme
 import com.github.matheusadsantos.aluvery.ui.theme.component.CardProductItem
+import com.github.matheusadsantos.aluvery.ui.theme.component.ProductsSection
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(
-    sections: Map<String, List<Product>>
+    sections: Map<String, List<Product>>,
+    searchText: String = ""
 ) {
     Column {
-        var text by remember { mutableStateOf("") }
+        var text by remember { mutableStateOf(searchText) }
         OutlinedTextField(
             value = text, onValueChange = { newValue ->
-                Log.d("HomeScreen", "HomeScreen: $text")
                 text = newValue
+                Log.d("HomeScreen", "onValueChange: $text")
             },
             Modifier
                 .fillMaxWidth()
@@ -65,19 +67,22 @@ fun HomeScreen(
                 .padding(bottom = 16.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp),
         ) {
-            items(sampleProducts) { product ->
-                CardProductItem(product = product, Modifier.padding(horizontal = 16.dp))
+            if (text.isEmpty()) {
+                for (section in sections) {
+                    val title = section.key
+                    val products = section.value
+                    item {
+                        ProductsSection(
+                            title = title,
+                            products = products
+                        )
+                    }
+                }
+            } else {
+                items(sampleProducts) { product ->
+                    CardProductItem(product = product, Modifier.padding(horizontal = 16.dp))
+                }
             }
-//            for (section in sections) {
-//                val title = section.key
-//                val products = section.value
-//                item {
-//                    ProductsSection(
-//                        title = title,
-//                        products = products
-//                    )
-//                }
-//            }
         }
     }
 }
@@ -88,6 +93,16 @@ fun HomeScreenPreview() {
     AluveryTheme {
         Surface {
             HomeScreen(sampleSections)
+        }
+    }
+}
+
+@Preview
+@Composable
+fun HomeScreenWithDescriptionPreview() {
+    AluveryTheme {
+        Surface {
+            HomeScreen(sampleSections, "a")
         }
     }
 }
