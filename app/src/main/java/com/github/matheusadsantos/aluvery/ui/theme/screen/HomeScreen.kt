@@ -35,14 +35,24 @@ import com.github.matheusadsantos.aluvery.ui.theme.component.ProductsSection
 @Composable
 fun HomeScreen(
     sections: Map<String, List<Product>>,
-    searchText: String = ""
+    searchDescription: String = ""
 ) {
     Column {
-        var text by remember { mutableStateOf(searchText) }
+        var searchText: String by remember { mutableStateOf(searchDescription) }
+        val searchedProducts = remember(searchText) {
+            if (searchText.isNotEmpty()) {
+                sampleProducts.filter { product ->
+                    product.name.contains(searchText, ignoreCase = true) ||
+                            product.description?.contains(searchText, ignoreCase = true) == true
+                }
+            } else {
+                emptyList()
+            }
+        }
         OutlinedTextField(
-            value = text, onValueChange = { newValue ->
-                text = newValue
-                Log.d("HomeScreen", "onValueChange: $text")
+            value = searchText, onValueChange = { newValue ->
+                searchText = newValue
+                Log.d("HomeScreen", "onValueChange: $searchText")
             },
             Modifier
                 .fillMaxWidth()
@@ -67,7 +77,7 @@ fun HomeScreen(
                 .padding(bottom = 16.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp),
         ) {
-            if (text.isEmpty()) {
+            if (searchText.isEmpty()) {
                 for (section in sections) {
                     val title = section.key
                     val products = section.value
@@ -79,7 +89,7 @@ fun HomeScreen(
                     }
                 }
             } else {
-                items(sampleProducts) { product ->
+                items(searchedProducts) { product ->
                     CardProductItem(product = product, Modifier.padding(horizontal = 16.dp))
                 }
             }
