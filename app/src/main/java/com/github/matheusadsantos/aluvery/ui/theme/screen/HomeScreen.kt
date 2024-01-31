@@ -30,6 +30,7 @@ import com.github.matheusadsantos.aluvery.sampledata.sampleSections
 import com.github.matheusadsantos.aluvery.ui.theme.AluveryTheme
 import com.github.matheusadsantos.aluvery.ui.theme.component.CardProductItem
 import com.github.matheusadsantos.aluvery.ui.theme.component.ProductsSection
+import com.github.matheusadsantos.aluvery.ui.theme.component.SearchTextField
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -39,6 +40,11 @@ fun HomeScreen(
 ) {
     Column {
         var searchText: String by remember { mutableStateOf(searchDescription) }
+        SearchTextField(
+            searchText = searchText,
+            onChangedSearch = { searchText = it },
+            modifier = Modifier
+        )
         val searchedProducts = remember(searchText) {
             if (searchText.isNotEmpty()) {
                 sampleProducts.filter { product ->
@@ -49,28 +55,6 @@ fun HomeScreen(
                 emptyList()
             }
         }
-        OutlinedTextField(
-            value = searchText, onValueChange = { newValue ->
-                searchText = newValue
-                Log.d("HomeScreen", "onValueChange: $searchText")
-            },
-            Modifier
-                .fillMaxWidth()
-                .padding(16.dp),
-            shape = RoundedCornerShape(100),
-            leadingIcon = {
-                Icon(
-                    imageVector = Icons.Default.Search,
-                    contentDescription = "Icon from lupa"
-                )
-            },
-            label = {
-                Text(text = "Product")
-            },
-            placeholder = {
-                Text("What do you looking for?")
-            }
-        )
         LazyColumn(
             Modifier
                 .fillMaxSize()
