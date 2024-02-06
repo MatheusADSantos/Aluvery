@@ -1,4 +1,4 @@
-package com.github.matheusadsantos.aluvery.ui.theme.component
+package com.github.matheusadsantos.aluvery.ui.component
 
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding

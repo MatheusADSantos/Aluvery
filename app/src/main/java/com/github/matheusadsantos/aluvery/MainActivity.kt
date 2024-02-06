@@ -8,7 +8,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
 import com.github.matheusadsantos.aluvery.sampledata.sampleSections
 import com.github.matheusadsantos.aluvery.ui.theme.AluveryTheme
-import com.github.matheusadsantos.aluvery.ui.theme.screen.HomeScreen
+import com.github.matheusadsantos.aluvery.ui.screen.HomeScreen
 
 /*
 This layout is based in:

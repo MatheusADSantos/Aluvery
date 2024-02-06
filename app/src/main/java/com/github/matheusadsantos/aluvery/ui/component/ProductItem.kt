@@ -1,4 +1,4 @@
-package com.github.matheusadsantos.aluvery.ui.theme.component
+package com.github.matheusadsantos.aluvery.ui.component
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -30,7 +30,6 @@ import androidx.compose.ui.tooling.preview.datasource.LoremIpsum
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
-import coil.compose.AsyncImagePainter
 import com.github.matheusadsantos.aluvery.R
 import com.github.matheusadsantos.aluvery.extension.toBrazilianCurrency
 import com.github.matheusadsantos.aluvery.model.Product

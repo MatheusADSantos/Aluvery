@@ -1,4 +1,4 @@
-package com.github.matheusadsantos.aluvery.ui.theme.component
+package com.github.matheusadsantos.aluvery.ui.component
 
 import android.util.Log
 import androidx.compose.foundation.background
