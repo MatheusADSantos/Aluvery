@@ -1,4 +1,4 @@
-package com.github.matheusadsantos.aluvery
+package com.github.matheusadsantos.aluvery.ui.activity
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
