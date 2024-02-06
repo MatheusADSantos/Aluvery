@@ -19,41 +19,51 @@ import androidx.compose.ui.unit.dp
 import com.github.matheusadsantos.aluvery.model.Product
 import com.github.matheusadsantos.aluvery.sampledata.sampleProducts
 import com.github.matheusadsantos.aluvery.sampledata.sampleSections
-import com.github.matheusadsantos.aluvery.ui.theme.AluveryTheme
 import com.github.matheusadsantos.aluvery.ui.component.CardProductItem
 import com.github.matheusadsantos.aluvery.ui.component.ProductsSection
 import com.github.matheusadsantos.aluvery.ui.component.SearchTextField
+import com.github.matheusadsantos.aluvery.ui.theme.AluveryTheme
+
+class HomeScreenUIState(searchText: String = "") {
+    var searchText: String by mutableStateOf(searchText)
+
+    val searchedProducts
+        get() =
+            if (searchText.isNotBlank()) {
+                sampleProducts.filter { product ->
+                    product.name.contains(searchText, ignoreCase = true) ||
+                            product.description?.contains(searchText, ignoreCase = true) == true
+                }
+            } else emptyList()
+
+    fun isShowSections() = searchText.isEmpty()
+
+}
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(
     sections: Map<String, List<Product>>,
-    searchDescription: String = ""
+    searchText: String = ""
 ) {
     Column {
-        var searchText: String by remember { mutableStateOf(searchDescription) }
+
+        val state = remember { HomeScreenUIState(searchText) }
+        val searchedProducts = state.searchedProducts
+
         SearchTextField(
             searchText = searchText,
-            onChangedSearch = { searchText = it },
+            onChangedSearch = { state.searchText = it },
             modifier = Modifier
         )
-        val searchedProducts = remember(searchText) {
-            if (searchText.isNotEmpty()) {
-                sampleProducts.filter { product ->
-                    product.name.contains(searchText, ignoreCase = true) ||
-                            product.description?.contains(searchText, ignoreCase = true) == true
-                }
-            } else {
-                emptyList()
-            }
-        }
+
         LazyColumn(
             Modifier
                 .fillMaxSize()
                 .padding(bottom = 16.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp),
         ) {
-            if (searchText.isEmpty()) {
+            if (state.isShowSections()) {
                 for (section in sections) {
                     val title = section.key
                     val products = section.value
