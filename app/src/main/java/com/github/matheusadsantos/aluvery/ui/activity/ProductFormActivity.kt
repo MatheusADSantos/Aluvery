@@ -15,6 +15,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -29,6 +31,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -74,7 +78,7 @@ fun ProductFormScreen() {
         var url by remember {
             mutableStateOf("")
         }
-        if (url.isNotBlank()){
+        if (url.isNotBlank()) {
             AsyncImage(
                 model = url,
                 contentDescription = null,
@@ -90,7 +94,11 @@ fun ProductFormScreen() {
             url = it
         }, Modifier.fillMaxWidth(), label = {
             Text("Url Image")
-        })
+        },
+            keyboardOptions = KeyboardOptions(
+                keyboardType = KeyboardType.Uri,
+                imeAction = ImeAction.Next // to go next step
+            ))
 
         var name by remember {
             mutableStateOf("")
@@ -99,7 +107,12 @@ fun ProductFormScreen() {
             name = it
         }, Modifier.fillMaxWidth(), label = {
             Text("Name")
-        })
+        },
+            keyboardOptions = KeyboardOptions(
+                keyboardType = KeyboardType.Text,
+                imeAction = ImeAction.Next // to go next step
+            )
+        )
 
         var price by remember {
             mutableStateOf("")
@@ -108,7 +121,11 @@ fun ProductFormScreen() {
             price = it
         }, Modifier.fillMaxWidth(), label = {
             Text("Price")
-        })
+        },
+            keyboardOptions = KeyboardOptions(
+                keyboardType = KeyboardType.Decimal,
+                imeAction = ImeAction.Next // to go next step
+            ))
 
         var description by remember {
             mutableStateOf("")
@@ -120,7 +137,10 @@ fun ProductFormScreen() {
                 .fillMaxWidth()
                 .heightIn(min = 100.dp), label = {
                 Text("Description")
-            })
+            },
+            keyboardOptions = KeyboardOptions(
+                keyboardType = KeyboardType.Text,
+            ))
         Button(onClick = {
             val convertedPrice = try {
                 BigDecimal(price)
