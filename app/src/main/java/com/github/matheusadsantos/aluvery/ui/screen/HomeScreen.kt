@@ -11,7 +11,6 @@ import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
@@ -25,35 +24,40 @@ import com.github.matheusadsantos.aluvery.ui.component.SearchTextField
 import com.github.matheusadsantos.aluvery.ui.theme.AluveryTheme
 
 class HomeScreenUIState(searchText: String = "") {
-    var searchText: String by mutableStateOf(searchText)
+
+    var text: String by mutableStateOf(searchText)
 
     val searchedProducts
         get() =
-            if (searchText.isNotBlank()) {
+            if (text.isNotBlank()) {
                 sampleProducts.filter { product ->
-                    product.name.contains(searchText, ignoreCase = true) ||
-                            product.description?.contains(searchText, ignoreCase = true) == true
+                    product.name.contains(text, ignoreCase = true) ||
+                            product.description?.contains(text, ignoreCase = true) == true
                 }
             } else emptyList()
 
-    fun isShowSections() = searchText.isEmpty()
+    fun isShowSections() = text.isEmpty()
 
+    val onSearchText: (String) -> Unit = { searchText ->
+        text = searchText
+    }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(
     sections: Map<String, List<Product>>,
-    searchText: String = ""
+    state: HomeScreenUIState = HomeScreenUIState()
 ) {
     Column {
 
-        val state = remember { HomeScreenUIState(searchText) }
+//        val state = remember { HomeScreenUIState(searchText) }
         val searchedProducts = state.searchedProducts
+        val text = state.text
 
         SearchTextField(
-            searchText = searchText,
-            onChangedSearch = { state.searchText = it },
+            searchText = text,
+            onChangedSearch = state.onSearchText,
             modifier = Modifier
         )
 
@@ -98,7 +102,7 @@ fun HomeScreenPreview() {
 fun HomeScreenWithDescriptionPreview() {
     AluveryTheme {
         Surface {
-            HomeScreen(sampleSections, "a")
+            HomeScreen(sampleSections, HomeScreenUIState("a"))
         }
     }
 }
