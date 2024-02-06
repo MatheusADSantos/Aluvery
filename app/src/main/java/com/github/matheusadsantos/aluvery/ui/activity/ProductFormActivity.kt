@@ -2,10 +2,8 @@ package com.github.matheusadsantos.aluvery.ui.activity
 
 import android.os.Bundle
 import android.util.Log
-import android.widget.Space
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -15,7 +13,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
@@ -32,6 +29,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -41,6 +39,7 @@ import com.github.matheusadsantos.aluvery.R
 import com.github.matheusadsantos.aluvery.model.Product
 import com.github.matheusadsantos.aluvery.ui.theme.AluveryTheme
 import java.math.BigDecimal
+import java.text.DecimalFormat
 
 class ProductFormActivity : ComponentActivity() {
 
@@ -98,7 +97,8 @@ fun ProductFormScreen() {
             keyboardOptions = KeyboardOptions(
                 keyboardType = KeyboardType.Uri,
                 imeAction = ImeAction.Next // to go next step
-            ))
+            )
+        )
 
         var name by remember {
             mutableStateOf("")
@@ -110,29 +110,41 @@ fun ProductFormScreen() {
         },
             keyboardOptions = KeyboardOptions(
                 keyboardType = KeyboardType.Text,
-                imeAction = ImeAction.Next // to go next step
+                imeAction = ImeAction.Next, // to go next step
+                capitalization = KeyboardCapitalization.Words
             )
         )
 
         var price by remember {
             mutableStateOf("")
         }
+        val formatter = remember {
+            DecimalFormat("#.##")
+        }
         TextField(value = price, onValueChange = {
-            price = it
+            try {
+                price = formatter.format(BigDecimal(it))
+            } catch (e: IllegalArgumentException) {
+                if(it.isEmpty()) {
+                    price = it
+                }
+            }
         }, Modifier.fillMaxWidth(), label = {
             Text("Price")
         },
             keyboardOptions = KeyboardOptions(
                 keyboardType = KeyboardType.Decimal,
-                imeAction = ImeAction.Next // to go next step
-            ))
+                imeAction = ImeAction.Next, // to go next step
+            )
+        )
 
         var description by remember {
             mutableStateOf("")
         }
-        TextField(value = description, onValueChange = {
-            description = it
-        },
+        TextField(
+            value = description, onValueChange = {
+                description = it
+            },
             Modifier
                 .fillMaxWidth()
                 .heightIn(min = 100.dp), label = {
@@ -140,7 +152,9 @@ fun ProductFormScreen() {
             },
             keyboardOptions = KeyboardOptions(
                 keyboardType = KeyboardType.Text,
-            ))
+                capitalization = KeyboardCapitalization.Sentences
+            )
+        )
         Button(onClick = {
             val convertedPrice = try {
                 BigDecimal(price)
