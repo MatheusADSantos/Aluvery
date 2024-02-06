@@ -17,6 +17,7 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
@@ -115,28 +116,40 @@ fun ProductFormScreen() {
             )
         )
 
-        var price by remember {
-            mutableStateOf("")
-        }
-        val formatter = remember {
-            DecimalFormat("#.##")
-        }
-        TextField(value = price, onValueChange = {
-            try {
-                price = formatter.format(BigDecimal(it))
-            } catch (e: IllegalArgumentException) {
-                if(it.isEmpty()) {
-                    price = it
+        var price by remember { mutableStateOf("") }
+        var isPriceError by remember { mutableStateOf(false) }
+        TextField(
+            value = price,
+            onValueChange = {
+                isPriceError = try {
+                    BigDecimal(it)                          
+                    false
+                } catch (e: IllegalArgumentException) {
+                    it.isNotEmpty()
+                } catch (e: NumberFormatException) {
+                    Log.e("ProductFormActivity", "ProductFormScreen: ${e.message}", )
+                    it.isNotEmpty()
                 }
-            }
-        }, Modifier.fillMaxWidth(), label = {
-            Text("Price")
-        },
+                price = it
+            },
+            Modifier.fillMaxWidth(),
+            isError = isPriceError,
+            label = {
+                Text("Price")
+            },
             keyboardOptions = KeyboardOptions(
                 keyboardType = KeyboardType.Decimal,
                 imeAction = ImeAction.Next, // to go next step
-            )
+            ),
         )
+        if (isPriceError) {
+            Text(
+                text = "Price must be decimal",
+                color = MaterialTheme.colorScheme.error,
+                style = MaterialTheme.typography.titleSmall,
+                modifier = Modifier.padding(start = 16.dp)
+            )
+        }
 
         var description by remember {
             mutableStateOf("")
