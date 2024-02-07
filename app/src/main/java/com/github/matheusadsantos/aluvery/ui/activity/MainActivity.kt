@@ -44,8 +44,8 @@ class MainActivity : ComponentActivity() {
                     "Sweets" to sampleCandies,
                     "Drinks" to sampleDrinks
                 )
-                val state = remember { HomeScreenUIState() }
-                HomeScreen(sections = sections, state)
+                val state = remember(sections) { HomeScreenUIState(sections) }
+                HomeScreen(state)
             }
         }
     }

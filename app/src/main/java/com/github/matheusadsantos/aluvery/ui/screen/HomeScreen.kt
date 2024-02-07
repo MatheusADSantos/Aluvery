@@ -23,7 +23,10 @@ import com.github.matheusadsantos.aluvery.ui.component.ProductsSection
 import com.github.matheusadsantos.aluvery.ui.component.SearchTextField
 import com.github.matheusadsantos.aluvery.ui.theme.AluveryTheme
 
-class HomeScreenUIState(searchText: String = "") {
+class HomeScreenUIState(
+    val sections: Map<String, List<Product>> = emptyMap(),
+    searchText: String = "",
+) {
 
     var text: String by mutableStateOf(searchText)
 
@@ -41,17 +44,17 @@ class HomeScreenUIState(searchText: String = "") {
     val onSearchText: (String) -> Unit = { searchText ->
         text = searchText
     }
+
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(
-    sections: Map<String, List<Product>>,
     state: HomeScreenUIState = HomeScreenUIState()
 ) {
     Column {
 
-//        val state = remember { HomeScreenUIState(searchText) }
+        val sections = state.sections
         val searchedProducts = state.searchedProducts
         val text = state.text
 
@@ -92,7 +95,7 @@ fun HomeScreen(
 fun HomeScreenPreview() {
     AluveryTheme {
         Surface {
-            HomeScreen(sampleSections)
+            HomeScreen(state = HomeScreenUIState(sections = sampleSections))
         }
     }
 }
@@ -102,7 +105,12 @@ fun HomeScreenPreview() {
 fun HomeScreenWithDescriptionPreview() {
     AluveryTheme {
         Surface {
-            HomeScreen(sampleSections, HomeScreenUIState("a"))
+            HomeScreen(
+                state = HomeScreenUIState(
+                    searchText = "a",
+                    sections = sampleSections
+                )
+            )
         }
     }
 }
