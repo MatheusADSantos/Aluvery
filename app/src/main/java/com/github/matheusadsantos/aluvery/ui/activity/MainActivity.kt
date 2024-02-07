@@ -21,8 +21,10 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import com.github.matheusadsantos.aluvery.dao.ProductDao
+import com.github.matheusadsantos.aluvery.model.Product
 import com.github.matheusadsantos.aluvery.sampledata.sampleCandies
 import com.github.matheusadsantos.aluvery.sampledata.sampleDrinks
+import com.github.matheusadsantos.aluvery.sampledata.sampleProducts
 import com.github.matheusadsantos.aluvery.ui.screen.HomeScreen
 import com.github.matheusadsantos.aluvery.ui.screen.HomeScreenUIState
 import com.github.matheusadsantos.aluvery.ui.theme.AluveryTheme
@@ -54,10 +56,21 @@ class MainActivity : ComponentActivity() {
                 var text by remember {
                     mutableStateOf("")
                 }
-                val state = remember(sections, text) {
+
+                fun containsInNameOrDescription() = { product: Product ->
+                    product.name.contains(text, ignoreCase = true) ||
+                            product.description?.contains(text, ignoreCase = true) == true
+                }
+
+                val searchedProducts = remember(products, text) {
+                    if (text.isNotBlank()) {
+                        sampleProducts.filter(containsInNameOrDescription()) + products.filter(containsInNameOrDescription())
+                    } else emptyList()
+                }
+                val state = remember(products, text) {
                     HomeScreenUIState(
                         sections = sections,
-                        products = products,
+                        searchedProducts = searchedProducts,
                         searchText = text,
                         onSearchText = { searchText ->  // Update text state, in sequence re composable main state
                             text = searchText

@@ -9,15 +9,11 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.github.matheusadsantos.aluvery.model.Product
-import com.github.matheusadsantos.aluvery.sampledata.sampleProducts
 import com.github.matheusadsantos.aluvery.sampledata.sampleSections
 import com.github.matheusadsantos.aluvery.ui.component.CardProductItem
 import com.github.matheusadsantos.aluvery.ui.component.ProductsSection
@@ -26,21 +22,10 @@ import com.github.matheusadsantos.aluvery.ui.theme.AluveryTheme
 
 class HomeScreenUIState(
     val sections: Map<String, List<Product>> = emptyMap(),
-    private val products: List<Product> = emptyList(),
+    val searchedProducts: List<Product> = emptyList(),
     val searchText: String = "",
     val onSearchText: (String) -> Unit = {}
 ) {
-
-    val searchedProducts
-        get() =
-            if (searchText.isNotBlank()) {
-                sampleProducts.filter(containsInNameOrDescription()) + products.filter(containsInNameOrDescription())
-            } else emptyList()
-
-    private fun containsInNameOrDescription() = { product: Product ->
-        product.name.contains(searchText, ignoreCase = true) ||
-                product.description?.contains(searchText, ignoreCase = true) == true
-    }
 
     fun isShowSections() = searchText.isEmpty()
 }
@@ -54,7 +39,7 @@ fun HomeScreen(
 
         val sections = state.sections
         val text = state.searchText
-        val searchedProducts = remember(text) {
+        val searchedProducts = remember(text, sections) {
             state.searchedProducts
         }
 
