@@ -11,6 +11,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
@@ -25,6 +26,7 @@ import com.github.matheusadsantos.aluvery.ui.theme.AluveryTheme
 
 class HomeScreenUIState(
     val sections: Map<String, List<Product>> = emptyMap(),
+    private val products: List<Product> = emptyList(),
     searchText: String = "",
 ) {
 
@@ -33,11 +35,13 @@ class HomeScreenUIState(
     val searchedProducts
         get() =
             if (text.isNotBlank()) {
-                sampleProducts.filter { product ->
-                    product.name.contains(text, ignoreCase = true) ||
-                            product.description?.contains(text, ignoreCase = true) == true
-                }
+                sampleProducts.filter(containsInNameOrDescription()) + products.filter(containsInNameOrDescription())
             } else emptyList()
+
+    private fun containsInNameOrDescription() = { product: Product ->
+        product.name.contains(text, ignoreCase = true) ||
+                product.description?.contains(text, ignoreCase = true) == true
+    }
 
     fun isShowSections() = text.isEmpty()
 
@@ -55,8 +59,10 @@ fun HomeScreen(
     Column {
 
         val sections = state.sections
-        val searchedProducts = state.searchedProducts
         val text = state.text
+        val searchedProducts = remember(text) {
+            state.searchedProducts
+        }
 
         SearchTextField(
             searchText = text,
