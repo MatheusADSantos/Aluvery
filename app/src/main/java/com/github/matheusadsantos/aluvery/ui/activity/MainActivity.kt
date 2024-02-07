@@ -14,7 +14,10 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import com.github.matheusadsantos.aluvery.dao.ProductDao
@@ -45,13 +48,23 @@ class MainActivity : ComponentActivity() {
                     "Sweets" to sampleCandies,
                     "Drinks" to sampleDrinks
                 )
-                val state = remember(products) {
+
+                // Needed create a 'text state' and
+                // Add join the 'sections state'(that have product too) into main state
+                var text by remember {
+                    mutableStateOf("")
+                }
+                val state = remember(sections, text) {
                     HomeScreenUIState(
                         sections = sections,
-                        products = products
+                        products = products,
+                        searchText = text,
+                        onSearchText = { searchText ->  // Update text state, in sequence re composable main state
+                            text = searchText
+                        }
                     )
                 }
-                HomeScreen(state)
+                HomeScreen(state = state)
             }
         }
     }

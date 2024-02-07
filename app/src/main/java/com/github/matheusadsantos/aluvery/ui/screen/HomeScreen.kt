@@ -27,28 +27,22 @@ import com.github.matheusadsantos.aluvery.ui.theme.AluveryTheme
 class HomeScreenUIState(
     val sections: Map<String, List<Product>> = emptyMap(),
     private val products: List<Product> = emptyList(),
-    searchText: String = "",
+    val searchText: String = "",
+    val onSearchText: (String) -> Unit = {}
 ) {
-
-    var text: String by mutableStateOf(searchText)
 
     val searchedProducts
         get() =
-            if (text.isNotBlank()) {
+            if (searchText.isNotBlank()) {
                 sampleProducts.filter(containsInNameOrDescription()) + products.filter(containsInNameOrDescription())
             } else emptyList()
 
     private fun containsInNameOrDescription() = { product: Product ->
-        product.name.contains(text, ignoreCase = true) ||
-                product.description?.contains(text, ignoreCase = true) == true
+        product.name.contains(searchText, ignoreCase = true) ||
+                product.description?.contains(searchText, ignoreCase = true) == true
     }
 
-    fun isShowSections() = text.isEmpty()
-
-    val onSearchText: (String) -> Unit = { searchText ->
-        text = searchText
-    }
-
+    fun isShowSections() = searchText.isEmpty()
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -59,7 +53,7 @@ fun HomeScreen(
     Column {
 
         val sections = state.sections
-        val text = state.text
+        val text = state.searchText
         val searchedProducts = remember(text) {
             state.searchedProducts
         }
