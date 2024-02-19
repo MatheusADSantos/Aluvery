@@ -1,6 +1,5 @@
-package com.github.matheusadsantos.aluvery.ui.component
+package com.github.matheusadsantos.aluvery.ui.screen
 
-import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -15,6 +14,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
@@ -34,12 +34,94 @@ import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.github.matheusadsantos.aluvery.R
 import com.github.matheusadsantos.aluvery.model.Product
+import com.github.matheusadsantos.aluvery.ui.theme.AluveryTheme
 import java.math.BigDecimal
 
+class ProductFormUIState(
+    val url: String = "",
+    val name: String = "",
+    val price: String = "",
+    val isPriceError: Boolean = false,
+    val description: String = "",
+    val onUrlChange: (String) -> Unit = {},
+    val onNameChange: (String) -> Unit = {},
+    val onPriceChange: (String) -> Unit = {},
+    val onDescriptionChange: (String) -> Unit = {},
+) {
+    // Up level all data and behavior from ProductFormScreen
+    fun isShowImage() = url.isNotBlank()
 
+}
+
+// StateFull(Only logic/states) -> Called by Activity
+@Composable
+fun ProductFormScreen(
+    onSaveProduct: (Product) -> Unit = {}
+) {
+    var url by remember { mutableStateOf("") }
+    var name by remember { mutableStateOf("") }
+    var price by remember { mutableStateOf("") }
+    var description by remember { mutableStateOf("") }
+
+    val isPriceError = remember(price) {
+        try {
+            BigDecimal(price)
+            false
+        } catch (e: IllegalArgumentException) {
+            price.isNotEmpty()
+        } catch (e: NumberFormatException) {
+            price.isNotEmpty()
+        }
+    }
+
+    ProductFormScreen(
+        state = ProductFormUIState(
+            url = url,
+            name = name,
+            price = price,
+            isPriceError = isPriceError,
+            description = description,
+
+            onUrlChange = {
+                url = it
+            },
+            onNameChange = {
+                name = it
+            },
+            onDescriptionChange = {
+                description = it
+            },
+            onPriceChange = {
+                price = it
+            },
+        ),
+        onSaveProduct = {
+            val convertedPrice = if (!isPriceError) BigDecimal(price) else BigDecimal.ZERO
+            val product = Product(
+                name = name,
+                price = convertedPrice,
+                image = url,
+                description = description
+            )
+            onSaveProduct(product)
+        }
+    )
+}
+
+// StateLess(Only composables) -> Called by main ProductFormScreen
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ProductFormScreen(onSaveProduct: (product: Product) -> Unit = {}) {
+fun ProductFormScreen(
+    state: ProductFormUIState = ProductFormUIState(),
+    onSaveProduct: () -> Unit = {}
+) {
+    // Getting data
+    val url = state.url
+    val isShowImage = state.isShowImage()
+    val name = state.name
+    val price = state.price
+    val description = state.description
+
     Column(
         Modifier
             .fillMaxSize()
@@ -54,10 +136,7 @@ fun ProductFormScreen(onSaveProduct: (product: Product) -> Unit = {}) {
             fontSize = 28.sp
         )
 
-        var url by remember {
-            mutableStateOf("")
-        }
-        if (url.isNotBlank()) {
+        if (isShowImage) {
             AsyncImage(
                 model = url,
                 contentDescription = null,
@@ -69,25 +148,22 @@ fun ProductFormScreen(onSaveProduct: (product: Product) -> Unit = {}) {
                 error = painterResource(R.drawable.placeholder),
             )
         }
-        TextField(value = url, onValueChange = {
-            url = it
-        }, Modifier.fillMaxWidth(), label = {
-            Text("Url Image")
-        },
+        TextField(
+            value = url, onValueChange = state.onUrlChange,
+            Modifier.fillMaxWidth(), label = {
+                Text("Url Image")
+            },
             keyboardOptions = KeyboardOptions(
                 keyboardType = KeyboardType.Uri,
                 imeAction = ImeAction.Next // to go next step
             )
         )
 
-        var name by remember {
-            mutableStateOf("")
-        }
-        TextField(value = name, onValueChange = {
-            name = it
-        }, Modifier.fillMaxWidth(), label = {
-            Text("Name")
-        },
+        TextField(
+            value = name, onValueChange = state.onNameChange,
+            Modifier.fillMaxWidth(), label = {
+                Text("Name")
+            },
             keyboardOptions = KeyboardOptions(
                 keyboardType = KeyboardType.Text,
                 imeAction = ImeAction.Next, // to go next step
@@ -95,24 +171,11 @@ fun ProductFormScreen(onSaveProduct: (product: Product) -> Unit = {}) {
             )
         )
 
-        var price by remember { mutableStateOf("") }
-        var isPriceError by remember { mutableStateOf(false) }
         TextField(
             value = price,
-            onValueChange = {
-                isPriceError = try {
-                    BigDecimal(it)
-                    false
-                } catch (e: IllegalArgumentException) {
-                    it.isNotEmpty()
-                } catch (e: NumberFormatException) {
-                    Log.e("ProductFormActivity", "ProductFormScreen: ${e.message}")
-                    it.isNotEmpty()
-                }
-                price = it
-            },
+            onValueChange = state.onPriceChange,
             Modifier.fillMaxWidth(),
-            isError = isPriceError,
+            isError = state.isPriceError,
             label = {
                 Text("Price")
             },
@@ -121,7 +184,7 @@ fun ProductFormScreen(onSaveProduct: (product: Product) -> Unit = {}) {
                 imeAction = ImeAction.Next, // to go next step
             ),
         )
-        if (isPriceError) {
+        if (state.isPriceError) {
             Text(
                 text = "Price must be decimal",
                 color = MaterialTheme.colorScheme.error,
@@ -130,13 +193,8 @@ fun ProductFormScreen(onSaveProduct: (product: Product) -> Unit = {}) {
             )
         }
 
-        var description by remember {
-            mutableStateOf("")
-        }
         TextField(
-            value = description, onValueChange = {
-                description = it
-            },
+            value = description, onValueChange = state.onDescriptionChange,
             Modifier
                 .fillMaxWidth()
                 .heightIn(min = 100.dp), label = {
@@ -147,29 +205,42 @@ fun ProductFormScreen(onSaveProduct: (product: Product) -> Unit = {}) {
                 capitalization = KeyboardCapitalization.Sentences
             )
         )
-        Button(onClick = {
-            val convertedPrice = try {
-                BigDecimal(price)
-            } catch (e: NumberFormatException) {
-                BigDecimal.ZERO
-            }
-            val product = Product(
-                name,
-                convertedPrice,
-                url,
-                description
-            )
-            onSaveProduct(product)
-            Log.d("ProductFormActivity", "ProductFormScreen: $product")
-        }, Modifier.fillMaxWidth()) {
+        
+        Button(
+            onClick = onSaveProduct,
+            modifier = Modifier.fillMaxWidth()
+        ) {
             Text("Save")
         }
         Spacer(modifier = Modifier)
     }
 }
 
-@Preview(showSystemUi = true)
+
+// We have 2 ways to preview
+@Preview
 @Composable
 fun ProductFormScreenPreview() {
-    ProductFormScreen()
+    AluveryTheme {
+        Surface {
+            ProductFormScreen(state = ProductFormUIState())
+        }
+    }
+}
+
+@Preview
+@Composable
+fun ProductFormScreenFilledPreview() {
+    AluveryTheme {
+        Surface {
+            ProductFormScreen(
+                state = ProductFormUIState(
+                    url = "url teste",
+                    name = "nome teste",
+                    price = "123",
+                    description = "descrição teste"
+                )
+            )
+        }
+    }
 }
