@@ -18,6 +18,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
@@ -40,7 +41,7 @@ fun CardProductItem(
     elevation: CardElevation = CardDefaults.elevatedCardElevation(),
     isExpanded: Boolean = false
 ) {
-    var expandedState: Boolean by remember { mutableStateOf(isExpanded) }
+    var expandedState: Boolean by rememberSaveable { mutableStateOf(isExpanded) }
     Card(
         modifier
             .fillMaxWidth()
