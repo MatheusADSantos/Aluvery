@@ -38,17 +38,15 @@ fun CardProductItem(
     product: Product,
     modifier: Modifier = Modifier,
     elevation: CardElevation = CardDefaults.elevatedCardElevation(),
-    expanded: Boolean = false
+    isExpanded: Boolean = false
 ) {
-    var expandedState: Boolean by remember { mutableStateOf(expanded) }
+    var expandedState: Boolean by remember { mutableStateOf(isExpanded) }
     Card(
         modifier
             .fillMaxWidth()
             .heightIn(150.dp)
             .clickable(onClick = {
                 expandedState = !expandedState
-                Log.d("MADS", "CardProductItem: expanded: $expandedState")
-
             }),
         elevation = elevation,
     ) {
@@ -76,14 +74,16 @@ fun CardProductItem(
                 )
             }
             product.description?.let { description ->
-                val textOverFlow = if (expandedState) TextOverflow.Visible else TextOverflow.Ellipsis
-                val textMaxLines = if (expandedState) Int.MAX_VALUE else 2
-                Text(
-                    text = description,
-                    Modifier.padding(16.dp),
-                    overflow = textOverFlow,
-                    maxLines = textMaxLines
-                )
+//                val textOverFlow = if (expandedState) TextOverflow.Visible else TextOverflow.Ellipsis
+//                val textMaxLines = if (expandedState) Int.MAX_VALUE else 2
+                if(expandedState){
+                    Text(
+                        text = description,
+                        Modifier.padding(16.dp),
+                        overflow = TextOverflow.Ellipsis,
+                        maxLines = Int.MAX_VALUE
+                    )
+                }
             }
         }
     }
@@ -131,7 +131,7 @@ private fun CardProductItemWithDescriptionExpandedPreview() {
                     price = BigDecimal("9.99"),
                     image = LoremIpsum(150).values.first(),
                 ),
-                expanded = true,
+                isExpanded = true,
             )
         }
     }
