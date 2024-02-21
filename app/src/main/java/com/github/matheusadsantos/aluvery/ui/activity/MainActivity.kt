@@ -19,6 +19,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.github.matheusadsantos.aluvery.dao.ProductDao
 import com.github.matheusadsantos.aluvery.ui.screen.HomeScreen
 import com.github.matheusadsantos.aluvery.ui.theme.AluveryTheme
+import com.github.matheusadsantos.aluvery.ui.viewmodel.HomeScreenViewModel
 
 /*
 This layout is based in:
@@ -35,7 +36,10 @@ class MainActivity : ComponentActivity() {
                 startActivity(Intent(this, ProductFormActivity::class.java))
             }) {
                 val products = dao.products()
-                HomeScreen(products = products)
+                HomeScreen(
+                    viewModel = HomeScreenViewModel(),
+                    products = products
+                )
             }
         }
     }

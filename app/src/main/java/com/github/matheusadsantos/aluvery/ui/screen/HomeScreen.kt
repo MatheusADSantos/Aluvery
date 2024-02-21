@@ -26,6 +26,7 @@ import com.github.matheusadsantos.aluvery.ui.component.CardProductItem
 import com.github.matheusadsantos.aluvery.ui.component.ProductsSection
 import com.github.matheusadsantos.aluvery.ui.component.SearchTextField
 import com.github.matheusadsantos.aluvery.ui.theme.AluveryTheme
+import com.github.matheusadsantos.aluvery.ui.viewmodel.HomeScreenViewModel
 
 class HomeScreenUIState(
     val sections: Map<String, List<Product>> = emptyMap(),
@@ -38,6 +39,7 @@ class HomeScreenUIState(
 
 @Composable // STATE FULL
 fun HomeScreen(
+    viewModel: HomeScreenViewModel,
     products: List<Product>
 ) {
     val sections = mapOf(
@@ -63,17 +65,8 @@ fun HomeScreen(
             sampleProducts.filter(containsInNameOrDescription()) + products.filter(containsInNameOrDescription())
         } else emptyList()
     }
-    val state = remember(products, text) {
-        HomeScreenUIState(
-            sections = sections,
-            searchedProducts = searchedProducts,
-            searchText = text,
-            onSearchText = { searchText ->  // Update text state, in sequence re composable main state
-                text = searchText
-            }
-        )
-    }
-    // Here, after work all logic, call HomeScreen(State Less) with yours composables
+
+    val state = viewModel.uiState
     HomeScreen(state = state)
 }
 
