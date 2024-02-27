@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.viewModels
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
@@ -16,30 +17,31 @@ import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import com.github.matheusadsantos.aluvery.dao.ProductDao
+import com.github.matheusadsantos.aluvery.sampledata.sampleSections
 import com.github.matheusadsantos.aluvery.ui.screen.HomeScreen
+import com.github.matheusadsantos.aluvery.ui.state.HomeScreenUIState
 import com.github.matheusadsantos.aluvery.ui.theme.AluveryTheme
 import com.github.matheusadsantos.aluvery.ui.viewmodel.HomeScreenViewModel
 
 /*
-This layout is based in:
-https://www.figma.com/file/8jLGPSbGkd31YLLAXakwGp/Aluvery?node-id=5%3A34&mode=dev
+    This layout is based in:
+    https://www.figma.com/file/8jLGPSbGkd31YLLAXakwGp/Aluvery?node-id=5%3A34&mode=dev
+    ------------------------------------------------------------------
+    This blog explaining all about compose:
+    https://medium.com/wearejaya/conhecendo-o-jetpack-compose-d0ca4398e5c7
 */
 
 class MainActivity : ComponentActivity() {
 
-    private val dao = ProductDao()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
             App(onFabClick = {
-                startActivity(Intent(this, ProductFormActivity::class.java))
+                val intent = Intent(this, ProductFormActivity::class.java)
+                startActivity(intent)
             }) {
-                val products = dao.products()
-                HomeScreen(
-                    viewModel = HomeScreenViewModel(),
-                    products = products
-                )
+                val viewModel by viewModels<HomeScreenViewModel>()
+                HomeScreen(viewModel = viewModel)
             }
         }
     }
@@ -69,7 +71,9 @@ private fun App(
 @Preview(showSystemUi = true)
 @Composable
 fun AppPreview() {
-    App()
+    App {
+        HomeScreen(HomeScreenUIState(sections = sampleSections))
+    }
 }
 
 
