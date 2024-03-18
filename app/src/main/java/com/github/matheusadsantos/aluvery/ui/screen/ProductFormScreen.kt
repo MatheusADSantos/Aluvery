@@ -37,6 +37,7 @@ import com.github.matheusadsantos.aluvery.R
 import com.github.matheusadsantos.aluvery.model.Product
 import com.github.matheusadsantos.aluvery.ui.theme.AluveryTheme
 import java.math.BigDecimal
+import java.text.DecimalFormat
 
 class ProductFormUIState(
     val url: String = "",
@@ -63,6 +64,9 @@ fun ProductFormScreen(
     var name by rememberSaveable { mutableStateOf("") }
     var price by rememberSaveable { mutableStateOf("") }
     var description by rememberSaveable { mutableStateOf("") }
+    val formatter = remember {
+        DecimalFormat("#.##")
+    }
 
     val isPriceError = remember(price) {
         try {
@@ -93,11 +97,21 @@ fun ProductFormScreen(
                 description = it
             },
             onPriceChange = {
-                price = it
+                try {
+                    price = formatter.format(BigDecimal(it))
+                } catch (e: IllegalArgumentException) {
+                    if (it.isBlank()) {
+                        price = it
+                    }
+                }
             },
         ),
         onSaveProduct = {
-            val convertedPrice = if (!isPriceError) BigDecimal(price) else BigDecimal.ZERO
+            val convertedPrice = try {
+                BigDecimal(price)
+            } catch (e: NumberFormatException) {
+                BigDecimal.ZERO
+            }
             val product = Product(
                 name = name,
                 price = convertedPrice,
