@@ -17,7 +17,7 @@ class HomeScreenViewModel : ViewModel() {
 
     private val dao = ProductDao()
 
-    private var _uiState: MutableStateFlow<HomeScreenUIState> = MutableStateFlow(HomeScreenUIState())
+    private val _uiState: MutableStateFlow<HomeScreenUIState> = MutableStateFlow(HomeScreenUIState())
     val uiState get() = _uiState.asStateFlow()
 
     init {
