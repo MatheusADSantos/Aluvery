@@ -31,7 +31,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.github.matheusadsantos.aluvery.R
-import com.github.matheusadsantos.aluvery.model.Product
 import com.github.matheusadsantos.aluvery.ui.state.ProductFormUIState
 import com.github.matheusadsantos.aluvery.ui.theme.AluveryTheme
 import com.github.matheusadsantos.aluvery.ui.viewmodel.ProductFormScreenViewModel
@@ -40,31 +39,24 @@ import com.github.matheusadsantos.aluvery.ui.viewmodel.ProductFormScreenViewMode
 @Composable
 fun ProductFormScreen(
     viewModel: ProductFormScreenViewModel,
-    onSaveProduct: (Product) -> Unit = {}
+    onSaveClick: () -> Unit = {}
 ) {
     val state by viewModel.uiState.collectAsState()
-    ProductFormScreen(state = state)
+    ProductFormScreen(
+        state = state,
+        onSaveClick = {
+            viewModel.saveProduct()
+            onSaveClick()
+        }
+    )
 }
-
-//val convertedPrice = try {
-//    BigDecimal(price)
-//} catch (e: NumberFormatException) {
-//    BigDecimal.ZERO
-//}
-//val product = Product(
-//    name = name,
-//    price = convertedPrice,
-//    image = url,
-//    description = description
-//)
-//onSaveProduct(product)
 
 // StateLess(Only composables) -> Called by main ProductFormScreen
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ProductFormScreen(
     state: ProductFormUIState = ProductFormUIState(),
-    onSaveProduct: () -> Unit = {}
+    onSaveClick: () -> Unit = {}
 ) {
     // Getting data
     val url = state.url
@@ -158,7 +150,7 @@ fun ProductFormScreen(
         )
 
         Button(
-            onClick = onSaveProduct,
+            onClick = onSaveClick,
             modifier = Modifier.fillMaxWidth()
         ) {
             Text("Save")

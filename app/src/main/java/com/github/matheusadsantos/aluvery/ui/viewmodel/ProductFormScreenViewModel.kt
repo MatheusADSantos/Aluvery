@@ -1,7 +1,8 @@
 package com.github.matheusadsantos.aluvery.ui.viewmodel
 
-import androidx.compose.runtime.remember
 import androidx.lifecycle.ViewModel
+import com.github.matheusadsantos.aluvery.dao.ProductDao
+import com.github.matheusadsantos.aluvery.model.Product
 import com.github.matheusadsantos.aluvery.ui.state.ProductFormUIState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.update
@@ -9,17 +10,11 @@ import java.math.BigDecimal
 import java.text.DecimalFormat
 
 class ProductFormScreenViewModel : ViewModel() {
+
     private val _uiState: MutableStateFlow<ProductFormUIState> = MutableStateFlow(ProductFormUIState())
     val uiState: MutableStateFlow<ProductFormUIState> get() = _uiState
-
-    //    fun updateName(name: String) {
-//        _uiState.value = _uiState.value.copy(name = name)
-//    }
-//    fun updateDescription(description: String) {
-//        _uiState.value = _uiState.value.copy(description = description)
-//    }
-    val formatter =
-        DecimalFormat("#.##")
+    private val formatter = DecimalFormat("#.##")
+    private val dao = ProductDao()
 
 
     init {
@@ -45,7 +40,26 @@ class ProductFormScreenViewModel : ViewModel() {
                 },
                 onDescriptionChange = {
                     _uiState.value = _uiState.value.copy(description = it)
-                })
+                }
+            )
         }
     }
+
+    fun saveProduct() {
+        _uiState.value.run {
+            val convertedPrice = try {
+                BigDecimal(price)
+            } catch (e: NumberFormatException) {
+                BigDecimal.ZERO
+            }
+            val product = Product(
+                name = name,
+                price = convertedPrice,
+                description = description,
+                image = url
+            )
+            dao.save(product)
+        }
+    }
+
 }

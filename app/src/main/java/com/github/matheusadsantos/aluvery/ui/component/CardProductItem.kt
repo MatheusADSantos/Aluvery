@@ -131,6 +131,7 @@ private fun CardProductItemWithDescriptionExpandedPreview() {
                     name = "Test",
                     price = BigDecimal("9.99"),
                     image = LoremIpsum(150).values.first(),
+                    description = "Description from product item searched"
                 ),
                 isExpanded = true,
             )
