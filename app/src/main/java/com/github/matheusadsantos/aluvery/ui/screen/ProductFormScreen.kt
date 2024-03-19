@@ -68,7 +68,7 @@ fun ProductFormScreen(
 ) {
     // Getting data
     val url = state.url
-    val isShowImage = state.isShowImage()
+    val isShowPreview = state.isShowPreviewImageUrl
     val name = state.name
     val price = state.price
     val description = state.description
@@ -87,7 +87,7 @@ fun ProductFormScreen(
             fontSize = 28.sp
         )
 
-        if (isShowImage) {
+        if (isShowPreview) {
             AsyncImage(
                 model = url,
                 contentDescription = null,

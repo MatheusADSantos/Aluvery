@@ -12,5 +12,5 @@ data class ProductFormUIState(
     val onDescriptionChange: (String) -> Unit = {},
 ) {
     // Up level all data and behavior from ProductFormScreen
-    fun isShowImage() = url.isNotBlank()
+    val isShowPreviewImageUrl: Boolean get() = url.isNotBlank()
 }
