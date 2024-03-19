@@ -18,11 +18,8 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
@@ -35,93 +32,32 @@ import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.github.matheusadsantos.aluvery.R
 import com.github.matheusadsantos.aluvery.model.Product
+import com.github.matheusadsantos.aluvery.ui.state.ProductFormUIState
 import com.github.matheusadsantos.aluvery.ui.theme.AluveryTheme
-import java.math.BigDecimal
-import java.text.DecimalFormat
-
-class ProductFormUIState(
-    val url: String = "",
-    val name: String = "",
-    val price: String = "",
-    val isPriceError: Boolean = false,
-    val description: String = "",
-    val onUrlChange: (String) -> Unit = {},
-    val onNameChange: (String) -> Unit = {},
-    val onPriceChange: (String) -> Unit = {},
-    val onDescriptionChange: (String) -> Unit = {},
-) {
-    // Up level all data and behavior from ProductFormScreen
-    fun isShowImage() = url.isNotBlank()
-
-}
+import com.github.matheusadsantos.aluvery.ui.viewmodel.ProductFormScreenViewModel
 
 // StateFull(Only logic/states) -> Called by Activity
 @Composable
 fun ProductFormScreen(
+    viewModel: ProductFormScreenViewModel,
     onSaveProduct: (Product) -> Unit = {}
 ) {
-    var url by rememberSaveable { mutableStateOf("") }
-    var name by rememberSaveable { mutableStateOf("") }
-    var price by rememberSaveable { mutableStateOf("") }
-    var description by rememberSaveable { mutableStateOf("") }
-    val formatter = remember {
-        DecimalFormat("#.##")
-    }
-
-    val isPriceError = remember(price) {
-        try {
-            BigDecimal(price)
-            false
-        } catch (e: IllegalArgumentException) {
-            price.isNotEmpty()
-        } catch (e: NumberFormatException) {
-            price.isNotEmpty()
-        }
-    }
-
-    ProductFormScreen(
-        state = ProductFormUIState(
-            url = url,
-            name = name,
-            price = price,
-            isPriceError = isPriceError,
-            description = description,
-
-            onUrlChange = {
-                url = it
-            },
-            onNameChange = {
-                name = it
-            },
-            onDescriptionChange = {
-                description = it
-            },
-            onPriceChange = {
-                try {
-                    price = formatter.format(BigDecimal(it))
-                } catch (e: IllegalArgumentException) {
-                    if (it.isBlank()) {
-                        price = it
-                    }
-                }
-            },
-        ),
-        onSaveProduct = {
-            val convertedPrice = try {
-                BigDecimal(price)
-            } catch (e: NumberFormatException) {
-                BigDecimal.ZERO
-            }
-            val product = Product(
-                name = name,
-                price = convertedPrice,
-                image = url,
-                description = description
-            )
-            onSaveProduct(product)
-        }
-    )
+    val state by viewModel.uiState.collectAsState()
+    ProductFormScreen(state = state)
 }
+
+//val convertedPrice = try {
+//    BigDecimal(price)
+//} catch (e: NumberFormatException) {
+//    BigDecimal.ZERO
+//}
+//val product = Product(
+//    name = name,
+//    price = convertedPrice,
+//    image = url,
+//    description = description
+//)
+//onSaveProduct(product)
 
 // StateLess(Only composables) -> Called by main ProductFormScreen
 @OptIn(ExperimentalMaterial3Api::class)
@@ -220,7 +156,7 @@ fun ProductFormScreen(
                 capitalization = KeyboardCapitalization.Sentences
             )
         )
-        
+
         Button(
             onClick = onSaveProduct,
             modifier = Modifier.fillMaxWidth()
